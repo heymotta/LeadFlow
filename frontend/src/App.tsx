@@ -18,7 +18,7 @@ export default function App() {
 
   useEffect(() => {
     api.checkAuth()
-      .then(() => setAuthenticated(true))
+      .then((res) => setAuthenticated(!!res?.authenticated))
       .catch(() => setAuthenticated(false));
   }, []);
 

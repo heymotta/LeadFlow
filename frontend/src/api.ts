@@ -7,15 +7,11 @@ async function request<T>(url: string, options?: RequestInit): Promise<T> {
     ...options,
   });
 
-  if (res.status === 401) {
-    // Redirect to login if unauthorized
-    window.location.reload();
-    throw new Error('Não autorizado');
-  }
-
-  const data = await res.json();
+  const data = await res.json().catch(() => ({}));
   if (!res.ok) {
-    throw new Error(data.error || 'Erro desconhecido');
+    const error: any = new Error(data.error || 'Erro desconhecido');
+    error.status = res.status;
+    throw error;
   }
   return data as T;
 }

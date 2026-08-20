@@ -9,8 +9,8 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction):
     return next();
   }
 
-  // Login route is public
-  if (req.path === '/api/auth/login') {
+  // Login and auth check routes are public
+  if (req.path === '/api/auth/login' || req.path === '/api/auth/check') {
     return next();
   }
 
@@ -35,6 +35,7 @@ export function loginHandler(req: Request, res: Response): void {
     res.cookie(AUTH_COOKIE, generateToken(), {
       httpOnly: true,
       sameSite: 'lax',
+      path: '/',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
     res.json({ ok: true });
@@ -44,7 +45,7 @@ export function loginHandler(req: Request, res: Response): void {
 }
 
 export function logoutHandler(_req: Request, res: Response): void {
-  res.clearCookie(AUTH_COOKIE);
+  res.clearCookie(AUTH_COOKIE, { path: '/' });
   res.json({ ok: true });
 }
 
@@ -53,7 +54,7 @@ export function checkAuthHandler(req: Request, res: Response): void {
   if (token === generateToken()) {
     res.json({ authenticated: true });
   } else {
-    res.status(401).json({ authenticated: false });
+    res.json({ authenticated: false });
   }
 }
 
