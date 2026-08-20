@@ -12,6 +12,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY prisma/ ./prisma/
+ENV DATABASE_URL=file:./data/leadflowz.db
 RUN npx prisma generate
 COPY tsconfig.json ./
 COPY src/ ./src/
