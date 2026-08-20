@@ -1,0 +1,28 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Contact {
+  id          Int       @id @default(autoincrement())
+  phone       String    @unique
+  pushName    String?
+  status      String    @default("pendente") // pendente | abordado | respondeu | convidado | ignorado
+  errorReason String?
+  abordadoEm  DateTime?
+  respondeuEm DateTime?
+  convidadoEm DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([status])
+}
+
+model Setting {
+  key   String @id
+  value String
+}
