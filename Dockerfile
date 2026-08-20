@@ -40,9 +40,10 @@ COPY --from=frontend-build /app/frontend/dist ./frontend/dist
 # Create data directory for SQLite
 RUN mkdir -p /app/data
 
-# Expose port
+# Environment defaults
 ENV PORT=3000
+ENV DATABASE_URL=file:./data/leadflowz.db
 EXPOSE 3000
 
-# Run migrations then start
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/index.js"]
+# Push schema to SQLite database then start
+CMD ["sh", "-c", "npx prisma db push --skip-generate && node dist/index.js"]
